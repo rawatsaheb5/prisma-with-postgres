@@ -12,3 +12,17 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+//  defining model or table schema
+
+model User{
+  id  Int @default(autoincrement())
+  name String?    // ? indicate field can be optional
+  email String @unique // field is required, unique determine all values should be unique
+  password String?
+  created_at DateTime @default(now())
+}
+
+
+
+// Whenever you update your Prisma schema, you will have to update your database schema using either prisma migrate dev or prisma db push. This will keep your database schema in sync with your Prisma schema. The commands will also regenerate Prisma Client.
