@@ -31,3 +31,23 @@ export const fetchAllPost = async (req, res) => {
     return res.status(500).json({ message: "internal server error" });
   }
 };
+export const fetchSinglePost = async (req, res) => {
+  try {
+    const postId = req.params.postId;
+    //console.log(req)
+    const post = await prisma.post.findFirst({
+      where: {
+        id: Number(postId),
+      },
+    });
+
+    if (post === null) {
+      return res.status(400).json({ message: "post doesn't exists" });
+    }
+    res
+      .status(200)
+      .json({ data: post, message: "all post fetched successfully!" });
+  } catch (error) {
+    return res.status(500).json({ message: "internal server error" });
+  }
+};
