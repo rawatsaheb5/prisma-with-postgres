@@ -16,13 +16,34 @@ datasource db {
 //  defining model or table schema
 
 model User{
-  id  Int @default(autoincrement())
-  name String?    // ? indicate field can be optional
+  id  Int @id @default(autoincrement()) // @id indicate it is a primary key
+  name String?    // ? indicate field can have NULL values 
   email String @unique // field is required, unique determine all values should be unique
   password String?
   created_at DateTime @default(now())
+  
+  post Post[]     // one to many relationship between user and post :> one user can have multiple posts {post and comment fields will not be created as a column in the table} 
+  comment Comment[]     // one user can have mulltiple comments
 }
 
+model Post{
+  id Int @id  @default(autoincrement())
+  title String 
+  description String?
+  image String?
+  authorId Int  // this field will be created and will store the refrence of user table
+  author User @relation(fields: [authorId], references: [id], onDelete: Cascade)   // This is the relation field in the Prisma schema, but it does not create a column in the database. It only helps Prisma understand the relationship between Post and User
+  comment Comment[]
+}
 
+model Comment{
+  id String @id @default(uuid())
+  content String
+  comment_count BigInt
+  postId Int
+  userId Int
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
 
 // Whenever you update your Prisma schema, you will have to update your database schema using either prisma migrate dev or prisma db push. This will keep your database schema in sync with your Prisma schema. The commands will also regenerate Prisma Client.
